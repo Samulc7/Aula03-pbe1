@@ -44,9 +44,29 @@ const novaConsulta = (req, res) => {
     }
 };
 
+const buscarPaciente = (req, res) => {
+    const nome = req.query.nome;
+
+    if (!nome) {
+        return res.status(400).send("Informe o nome do paciente.");
+    }
+
+    const resultados = consultas.filter((consulta) =>
+        consulta.paciente.toLowerCase().includes(nome.toLowerCase())
+    );
+
+    if (resultados.length === 0) {
+        return res.status(404).send("Paciente não encontrado.");
+    }
+
+    res.json(resultados);
+};
+
 app.get("/", listarConsultas);
 
 app.post("/", novaConsulta);
+
+app.get("/buscar", buscarPaciente);
 
 app.listen(porta, () => {
     console.log(`Servidor: http://127.0.0.1:${porta}`);
